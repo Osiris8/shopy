@@ -6,9 +6,13 @@ import { Link } from "react-router-dom";
 import { DigitalProduct } from "../../types";
 import { useMemo } from "react";
 import { useEffect } from "react";
+import { Drawer, Button } from "@medusajs/ui";
+
+import CreateDigitalProductForm from "../../components/create-digital-product-form";
 
 const DigitalProductsPage = () => {
   const [digitalProducts, setDigitalProducts] = useState<DigitalProduct[]>([]);
+  const [open, setOpen] = useState(false);
   // TODO fetch digital products...
   const [currentPage, setCurrentPage] = useState(0);
   const pageLimit = 20;
@@ -59,6 +63,36 @@ const DigitalProductsPage = () => {
       <div className="flex justify-between items-center mb-4">
         <Heading level="h2">Digital Products</Heading>
         {/* TODO add create button */}
+        <Drawer
+          open={open}
+          onOpenChange={(openChanged) => setOpen(openChanged)}
+        >
+          <Drawer.Trigger
+            onClick={() => {
+              setOpen(true);
+            }}
+            asChild
+          >
+            <Button>Create</Button>
+          </Drawer.Trigger>
+          <Drawer.Content>
+            <Drawer.Header>
+              <Drawer.Title>Create Product</Drawer.Title>
+            </Drawer.Header>
+            <Drawer.Body>
+              <CreateDigitalProductForm
+                onSuccess={() => {
+                  setOpen(false);
+                  if (currentPage === 0) {
+                    fetchProducts();
+                  } else {
+                    setCurrentPage(0);
+                  }
+                }}
+              />
+            </Drawer.Body>
+          </Drawer.Content>
+        </Drawer>
       </div>
       <Table>
         <Table.Header>
